@@ -28,4 +28,3 @@ jobs:
       with:
         name: KoandinaCognitoStack
         template: deployment.yml
-        parameter-overrides: "MyParam1=myValue,MyParam2=${{ secrets.MY_SECRET_VALUE }}"
