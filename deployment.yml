@@ -2,12 +2,15 @@ AWSTemplateFormatVersion: 2010-09-09
 Description:  Template for Cognito Federated User Pool.
 
 Parameters:
+  Environment:
+    Type: String
+    Default: dev
   CognitoUserPoolName:
     Type: String
-    Default: KoandinaUserPool
+    Default: !Sub KoandinaUserPool${Environment}
   CognitoUserPoolClientName:
     Type: String
-    Default: KoandinaPoolClient
+    Default: !Sub KoandinaPoolClient${Environment}
   KoandinaProviderName:
     Type: String
     Default: "AzureAD"
@@ -36,7 +39,6 @@ Resources:
         - AttributeDataType: String
           Name: email   
           Mutable: true 
-
   
   UserAzurePoolIdentityProvider:
     Type: AWS::Cognito::UserPoolIdentityProvider
@@ -51,7 +53,6 @@ Resources:
         name: "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"   
         family_name: "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname"             
         given_name: "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname"
-
 
   KoandinaUserPoolClient:
     DependsOn: UserAzurePoolIdentityProvider
@@ -78,11 +79,12 @@ Resources:
     Type: AWS::Cognito::UserPoolDomain 
     Properties:
       UserPoolId: !Ref KoandinaUserPool 
-      Domain: koandina-forecast            
+      Domain: !Sub  koandina-forecast${Environment}           
    
 Outputs:
   PoolId:
     Description: "Pool Cognito"
     Value:
       Ref: KoandinaUserPool
+ 
  
