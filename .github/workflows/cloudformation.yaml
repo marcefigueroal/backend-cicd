@@ -3,12 +3,13 @@ name: CloudFormation
 # Controls when the workflow will run
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "develop" ]
 
 jobs:
 
   deploy_aws:
     runs-on: ubuntu-latest
+    environment: develop
     steps:
     - uses: actions/checkout@v3    
     - name: Configure AWS credentials
