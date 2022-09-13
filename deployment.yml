@@ -4,7 +4,7 @@ Description:  Template for Cognito Federated User Pool.
 Parameters:
   Environment:
     Type: String
-    Default: develop
+    Default: "Develop"
   CognitoUserPoolName:
     Type: String
     Default: !Sub KoandinaUserPool${Environment}
@@ -79,7 +79,7 @@ Resources:
     Type: AWS::Cognito::UserPoolDomain 
     Properties:
       UserPoolId: !Ref KoandinaUserPool 
-      Domain: !Sub  koandina-forecast${Environment}           
+      Domain: !Sub  koandina-forecast-${Environment}           
    
 Outputs:
   PoolId:
