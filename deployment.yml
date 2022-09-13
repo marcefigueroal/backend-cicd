@@ -5,7 +5,7 @@ Parameters:
   Environment:
     Type: String
     Description: Environment Name
-    Default: lala
+    Default: dev
   CognitoUserPoolName:
     Type: String
     Default: KoandinaUserPool
