@@ -26,3 +26,4 @@ jobs:
       with:
         name: KoandinaCognitoStack
         template: deployment.yml
+         parameter-overrides: "Environment=${{ secrets.ENVIRONMENT }}"

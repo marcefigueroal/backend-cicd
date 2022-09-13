@@ -4,7 +4,7 @@ Description:  Template for Cognito Federated User Pool.
 Parameters:
   Environment:
     Type: String
-    Default: dvlp
+    Default: develop
   CognitoUserPoolName:
     Type: String
     Default: !Sub KoandinaUserPool${Environment}
