@@ -4,13 +4,14 @@ Description:  Template for Cognito Federated User Pool.
 Parameters:
   Environment:
     Type: String
-    Default: "Develop"
+    Description: Environment Name
+    Default: lala
   CognitoUserPoolName:
     Type: String
-    Default: !Sub KoandinaUserPool${Environment}
+    Default: KoandinaUserPool
   CognitoUserPoolClientName:
     Type: String
-    Default: !Sub KoandinaPoolClient${Environment}
+    Default: KoandinaPoolClient
   KoandinaProviderName:
     Type: String
     Default: "AzureAD"
@@ -29,7 +30,7 @@ Resources:
     Type: AWS::Cognito::UserPool
     Properties:
       UserPoolName:
-        Ref: CognitoUserPoolName
+        Ref: CognitoUserPoolName${Environment}
       Policies:
         PasswordPolicy:
           MinimumLength: 8
