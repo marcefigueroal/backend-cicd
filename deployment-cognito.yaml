@@ -1,6 +1,31 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description:  Template for Cognito Federated User Pool.
 
+Parameters:
+  Environment:
+    Type: String
+    Description: Environment Name
+    Default: dev
+  CognitoUserPoolName:
+    Type: String
+    Default: KoandinaUserPool
+  CognitoUserPoolClientName:
+    Type: String
+    Default: KoandinaPoolClient
+  KoandinaProviderName:
+    Type: String
+    Default: "AzureAD"
+  KoandinaMetadataURL:
+    Type: String
+    Default: "https://login.microsoftonline.com/864b6239-952e-4d13-adaa-06e01f3364a7/federationmetadata/2007-06/federationmetadata.xml?appid=7c71c1ea-be16-44ca-9491-64d41549ce9e"  
+  CallbackURLs:
+    Type: String
+    Default: "http://localhost:3000/login/"
+  LogoutURLs:
+    Type: String
+    Default: "http://localhost:3000/dashboard/"
+
+
 Resources:
   KoandinaUserPool:
     Type: AWS::Cognito::UserPool
