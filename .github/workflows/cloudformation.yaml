@@ -15,11 +15,11 @@ jobs:
     environment: develop
     steps:
     - uses: intuit/cfn-deploy@master
-        env:
-          AWS_REGION:  ${{ secrets.AWS_REGION }} 
-          STACK_NAME: cfn-deploy
-          TEMPLATE_FILE: deployment.yml
-          PARAMETERS_FILE: parameter.json
-          CAPABLITIES: CAPABILITY_IAM
-          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
-          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+      env:
+        AWS_REGION:  ${{ secrets.AWS_REGION }} 
+        STACK_NAME: cfn-deploy
+        TEMPLATE_FILE: deployment.yml
+        PARAMETERS_FILE: parameter.json
+        CAPABLITIES: CAPABILITY_IAM
+        AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+        AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
