@@ -25,15 +25,7 @@ jobs:
     - name: Deploy Cognito AWS CloudFormation
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
-        name: KoandinaCognitoStack
-        template: deployment-cognito.yaml
+        name: KoandinaMasterStack
+        template: master-deploy.yaml
         parameter-overrides: "Environment=${{ secrets.ENVIRONMENT }}"
-        no-fail-on-empty-changeset: "1"
-
-    - name: Deploy SG AWS CloudFormation
-      uses: aws-actions/aws-cloudformation-github-deploy@v1
-      with:
-        name: KoandinaSecurityGroupStack
-        template: RDSSecurityGroup.yaml
-        parameter-overrides: "vpcid=vpc-08977f5f6bbf1d548"        
         no-fail-on-empty-changeset: "1"

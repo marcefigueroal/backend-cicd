@@ -32,6 +32,12 @@ Parameters:
     Properties:
       Parameters:
         Environment: !Ref Environment
+        CognitoUserPoolName: !Ref CognitoUserPoolName
+        CognitoUserPoolClientName: !Ref CognitoUserPoolClientName
+        KoandinaProviderName: !Ref KoandinaProviderName
+        KoandinaMetadataURL: !Ref KoandinaMetadataURL
+        CallbackURLs: !Ref CallbackURLs
+        LogoutURLs: !Ref LogoutURLs
       Template: deployment-cognito.yaml
       TimeoutInMinutes: 15
 

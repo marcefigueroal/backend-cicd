@@ -1,0 +1,120 @@
+AWSTemplateFormatVersion: “2010-09-09”
+Description: CFN template para crear un cluster de Aurora Postgres
+
+Resources:
+  DBCluster:
+    DependsOn:
+      - DBSubnetGroup
+      - DBClusterPG
+    Type: AWS::RDS::DBCluster
+    DeletionPolicy: Snapshot
+    UpdateReplacePolicy: Snapshot
+    Properties:
+      DBClusterIdentifier: !Sub “${Ambiente}-${DBName}-cluster”
+      DBClusterParameterGroupName: !Ref DBClusterPG
+      DBSubnetGroupName: !Ref DBSubnetGroup
+      DatabaseName: !Ref DBName
+      DeletionProtection: false
+      Engine: aurora-postgresql
+      EngineMode: provisioned
+      EngineVersion: 10.11
+      MasterUserPassword: !Ref DBMasterUserPassword
+      MasterUsername: !Ref DBMasterUsername
+      Port: 5432
+      SourceRegion: !Ref 'AWS::Region'
+      StorageEncrypted: !Ref EncryptedStorage
+      BackupRetentionPeriod: 30
+      VpcSecurityGroupIds:
+        - Ref: AuroraSecurityGroup
+  DBClusterPG:
+    Type: AWS::RDS::DBClusterParameterGroup
+    Properties:
+      Description: DB Cluster Parameter Group for your Aurora DB cluster
+      Family: aurora-postgresql10
+      Parameters:
+        rds.logical_replication: 1
+  DBInstance:
+    DependsOn:
+      - DBSubnetGroup
+      - DBParameterGroup
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier: !Sub “${Ambiente}-${DBName}-instance”
+      DBInstanceClass:
+        Ref: DBInstanceClass
+      Engine: aurora-postgresql
+      EngineVersion: 10.11
+      DBSubnetGroupName:
+        Ref: DBSubnetGroup
+      DBParameterGroupName:
+        Ref: DBParameterGroup
+      StorageEncrypted: !Ref EncryptedStorage
+      EnablePerformanceInsights:
+        Ref: EnablePerformanceInsights
+      MultiAZ: !Ref MultiAZ
+      AutoMinorVersionUpgrade: true
+      CopyTagsToSnapshot: true
+      PubliclyAccessible: false
+      DBClusterIdentifier: !Ref DBCluster
+      Tags:
+      - Key: Name
+        Value: !Ref DBName
+      - Key: Ambiente de despliegue
+        Value: !Ref Ambiente
+  DBParameterGroup:
+    Type: AWS::RDS::DBParameterGroup
+    Properties:
+      Description: Database Parameter Group for your Aurora DB Instance
+      Family: aurora-postgresql10
+      Parameters:
+        shared_preload_libraries: “pg_stat_statements, pg_hint_plan”
+      Tags:
+      - Key: Name
+        Value: !Ref DBName
+      - Key: Ambiente de despliegue
+        Value: !Ref Ambiente
+  DBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Subnet Grouo for Aurora DB Cluster
+      SubnetIds:
+        - Ref: SubnetId1
+        - Ref: SubnetId2
+      Tags:
+      - Key: Name
+        Value: !Ref DBName
+      - Key: Ambiente de despliegue
+        Value: !Ref Ambiente
+  AuroraSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Habilita puerto del servicio postgres para conexion desde VPN Koandina y VPC
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+          - IpProtocol: TCP
+            FromPort: 5432
+            ToPort: 5432
+            CidrIp: !Ref AllowedCIDRCL
+          - IpProtocol: TCP
+            FromPort: 5432
+            ToPort: 5432
+            CidrIp: !Ref AllowedCIDRBR            
+          - IpProtocol: TCP
+            FromPort: 5432
+            ToPort: 5432
+            CidrIp: !Ref AllowedCIDRVPC                
+      Tags:
+      - Key: Name
+        Value: !Ref DBName
+      - Key: Ambiente de despliegue
+        Value: !Ref Ambiente
+Outputs:
+  RDSEndpoint:
+    Description: RDS Database Endpoint
+    Value:
+      Fn::GetAtt:
+        - DBInstance
+        - Endpoint.Address
+    Export:
+      Name:
+        Fn::Sub: “RDSEndpoint”
