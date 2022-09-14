@@ -9,8 +9,6 @@ on:
 
 jobs:
 
-jobs:
-
   deploy_aws_develop:
     runs-on: ubuntu-latest
     environment: develop
