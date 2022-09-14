@@ -49,7 +49,7 @@ jobs:
         parameter-overrides: >-
           NombreAplicacion=Aurora-Forecast, 
           DBMasterUserPassword=${{ secrets.DBMASTERUSERPASSWORD }}, 
-          DBMasterUsername=koandina-admin, 
+          DBMasterUsername=koadmin, 
           Ambiente=${{ secrets.ENVIRONMENT }}, 
           SubnetId2=subnet-087d204dcd7f21a30, 
           AllowedCIDRVPC=172.16.0.0/16, 
