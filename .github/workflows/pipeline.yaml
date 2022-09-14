@@ -8,7 +8,7 @@ on:
     branches: ["develop"]
 
 jobs:
-  deploy_aws_develop:
+  deploy_aws_cognito:
     runs-on: ubuntu-latest
     environment: develop
     steps:
@@ -23,7 +23,43 @@ jobs:
     - name: Deploy Cognito AWS CloudFormation
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
-        name: KoandinaMasterStack
+        name: KoandinaCognitoUserPool
         template: deployment-cognito.yaml
         parameter-overrides: "Environment=${{ secrets.ENVIRONMENT }}"
         no-fail-on-empty-changeset: "1"
+
+  deploy_aws_aurora:
+    runs-on: ubuntu-latest
+    environment: develop
+    steps:
+    - uses: actions/checkout@v3    
+    - name: Configure AWS credentials
+      id: creds
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}   
+    - name: Deploy Aurora Postgre AWS CloudFormation
+      uses: aws-actions/aws-cloudformation-github-deploy@v1
+      with:
+        name: KoandinaAuroraPostgre
+        template: deployment-rds.yaml
+        no-fail-on-empty-changeset: "1"     
+        parameter-overrides: >-
+        Environment=${{ secrets.ENVIRONMENT }},
+        VpcId: vpc-08977f5f6bbf1d548,
+        SubnetId1: subnet-0a508be317f6263aa,
+        SubnetId2: subnet-087d204dcd7f21a30,
+        AllowedCIDRVPNCL: 192.168.1.0/24,
+        AllowedCIDRVPNBR: 192.168.2.0/24,
+        AllowedCIDRVPC: 172.16.0.0/16,
+        DBName: koandina,
+        DBMasterUsername: koandina,
+        DBMasterUserPassword: ${{ secrets.DBMASTERUSERPASSWORD }},
+        DBInstanceClass: db.t3.medium,
+        EnablePerformanceInsights: false,
+        MultiAZ: false,
+        EncryptedStorage: true,
+        NombreProyecto: Koandina-forecast,
+        Ambiente: dev
