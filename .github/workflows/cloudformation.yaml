@@ -14,12 +14,12 @@ jobs:
     environment: develop
     steps:
     - uses: intuit/cfn-deploy@master
-        env:
-          AWS_REGION: ${{secrets.ENVIRONMENT}}
-          STACK_NAME: cfn-deploy-cognito
-          TEMPLATE_FILE: deployment-cognito.yml
-          PARAMETERS_FILE: parameter.json
-          CAPABLITIES: CAPABILITY_IAM
-          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
-          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-          NOTIFICATION_ARNS: arn:aws:sns:us-east-1:704331390715:SNSTopicKoandinaDeploy
+         env:
+           AWS_REGION: ${{secrets.ENVIRONMENT}}
+           STACK_NAME: cfn-deploy-cognito
+           TEMPLATE_FILE: deployment-cognito.yml
+           PARAMETERS_FILE: parameter.json
+           CAPABLITIES: CAPABILITY_IAM
+           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+           AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+           NOTIFICATION_ARNS: arn:aws:sns:us-east-1:704331390715:SNSTopicKoandinaDeploy
