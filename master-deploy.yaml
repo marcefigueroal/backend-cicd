@@ -29,7 +29,6 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       Template: deployment-cognito.yaml
-      TimeoutInMinutes: 15
       Parameters:
         Environment: !Ref Environment
         CognitoUserPoolName: !Ref CognitoUserPoolName
