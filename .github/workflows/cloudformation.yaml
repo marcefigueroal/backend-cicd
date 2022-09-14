@@ -3,11 +3,10 @@ name: CloudFormation
 # Controls when the workflow will run
 on:
   push:
-    branches: [ "develop" ]
-    branches: [ "main" ]    
+    branches: [ "develop" ] 
   pull_request: 
     branches: ["develop"]
-    branches: ["main"]    
+
 
 jobs:
 
@@ -15,17 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     environment: develop
     steps:
-    - uses: actions/checkout@v3    
-    - name: Configure AWS credentials
-      id: creds
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}   
-    - name: Deploy to AWS CloudFormation
-      uses: aws-actions/aws-cloudformation-github-deploy@v1
-      with:
-        name: KoandinaCognitoStack
-        template: deployment.yml
-        parameter-overrides: "Environment=${{ secrets.ENVIRONMENT }}"
+    - uses: intuit/cfn-deploy@master
+        env:
+          AWS_REGION:  ${{ secrets.AWS_REGION }} 
+          STACK_NAME: cfn-deploy
+          TEMPLATE_FILE: deployment.yml
+          PARAMETERS_FILE: parameter.json
+          CAPABLITIES: CAPABILITY_IAM
+          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
