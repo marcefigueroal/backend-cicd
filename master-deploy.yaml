@@ -2,8 +2,6 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: Master template Koandina
 
 Parameters:
-
-# Parameters Cognito
   Environment:
     Type: String
     Description: Environment Name
