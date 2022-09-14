@@ -47,19 +47,11 @@ jobs:
         template: deployment-rds.yaml
         no-fail-on-empty-changeset: "1"     
         parameter-overrides: >-
-        Environment=${{ secrets.ENVIRONMENT }},
-        VpcId: vpc-08977f5f6bbf1d548,
-        SubnetId1: subnet-0a508be317f6263aa,
-        SubnetId2: subnet-087d204dcd7f21a30,
-        AllowedCIDRVPNCL: 192.168.1.0/24,
-        AllowedCIDRVPNBR: 192.168.2.0/24,
-        AllowedCIDRVPC: 172.16.0.0/16,
-        DBName: koandina,
-        DBMasterUsername: koandina,
-        DBMasterUserPassword: ${{ secrets.DBMASTERUSERPASSWORD }},
-        DBInstanceClass: db.t3.medium,
-        EnablePerformanceInsights: false,
-        MultiAZ: false,
-        EncryptedStorage: true,
-        NombreProyecto: Koandina-forecast,
-        Ambiente: dev
+          AvailabilityZones=${{ github.event.inputs.region }}a,
+          AvailabilityZones=${{ github.event.inputs.region }}c,
+          KeyPairName=${{ github.event.inputs.keypair }},
+          NumberOfAZs=2,
+          ProvisionBastionHost=Disabled,
+          EKSPublicAccessEndpoint=Enabled,
+          EKSPrivateAccessEndpoint=Enabled,
+          RemoteAccessCIDR=0.0.0.0/0
