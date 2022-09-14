@@ -14,14 +14,14 @@ jobs:
     environment: develop
     steps:
     - uses: intuit/cfn-deploy@master
-         env:
-           AWS_REGION: us-east-2
-           STACK_NAME: cfn-deploy
-           TEMPLATE_FILE: deployment-cognito.yml
-           PARAMETERS_FILE: parameter.json
-           CAPABLITIES: CAPABILITY_IAM
-           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
-           AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-           SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
-           GITHUB_JOB_LINK: ${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}
-           NOTIFICATION_ARNS: arn:aws:sns:us-east-1:704331390715:SNSTopicKoandinaDeploy
+        env:
+          AWS_REGION: us-east-2
+          STACK_NAME: cfn-deploy
+          TEMPLATE_FILE: deployment-cognito.yml
+          PARAMETERS_FILE: parameter.json
+          CAPABLITIES: CAPABILITY_IAM
+          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
+          GITHUB_JOB_LINK: ${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}
+          NOTIFICATION_ARNS: arn:aws:sns:us-east-1:704331390715:SNSTopicKoandinaDeploy
