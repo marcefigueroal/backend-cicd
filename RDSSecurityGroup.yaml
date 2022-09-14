@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Parameters:
+  vpcid: 
+    Type: String
+
+Resources:
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: koandina-dev-rds-postgre-security-group-2
+      GroupDescription: Allow access to rds 
+      VpcId: !Ref vpcid
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          CidrIp: 10.6.198.0/24
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          CidrIp: 192.168.10.0/24 
+ 
+
