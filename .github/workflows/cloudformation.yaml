@@ -15,8 +15,8 @@ jobs:
     steps:
     - uses: intuit/cfn-deploy@master
         env:
-          AWS_REGION: us-east-2
-          STACK_NAME: cfn-deploy
+          AWS_REGION: ${{secrets.ENVIRONMENT}}
+          STACK_NAME: cfn-deploy-cognito
           TEMPLATE_FILE: deployment-cognito.yml
           PARAMETERS_FILE: parameter.json
           CAPABLITIES: CAPABILITY_IAM
