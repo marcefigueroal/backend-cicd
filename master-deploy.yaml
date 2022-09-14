@@ -25,9 +25,12 @@ Parameters:
     Type: String
     Default: "http://localhost:3000/dashboard/"
 
-  Cognito:
+Resources:
+  CognitoStack:
     Type: AWS::CloudFormation::Stack
     Properties:
+      Template: deployment-cognito.yaml
+      TimeoutInMinutes: 15
       Parameters:
         Environment: !Ref Environment
         CognitoUserPoolName: !Ref CognitoUserPoolName
@@ -35,9 +38,7 @@ Parameters:
         KoandinaProviderName: !Ref KoandinaProviderName
         KoandinaMetadataURL: !Ref KoandinaMetadataURL
         CallbackURLs: !Ref CallbackURLs
-        LogoutURLs: !Ref LogoutURLs
-      Template: deployment-cognito.yaml
-      TimeoutInMinutes: 15
+        LogoutURLs: !Ref LogoutURLs      
 
 
 
