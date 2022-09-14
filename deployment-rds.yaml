@@ -55,8 +55,8 @@ Parameters:
     Description: Ambiente de despliegue
     Type: String
     AllowedValues:
-      - “prod”
-      - “develop”
+      - "prod"
+      - "develop"
 
 Metadata:
   AWS::CloudFormation::Interface:
