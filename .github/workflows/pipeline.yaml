@@ -62,4 +62,4 @@ jobs:
         "MultiAZ: false",
         "EncryptedStorage: true",
         "NombreProyecto: Koandina-forecast",
-        "Ambiente: de"v
+        "Ambiente: dev"
