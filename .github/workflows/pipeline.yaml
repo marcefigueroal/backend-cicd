@@ -48,7 +48,7 @@ jobs:
         no-fail-on-empty-changeset: "1"     
         parameter-overrides: >-
           NombreAplicacion=Aurora-Forecast, 
-          DBMasterUserPassword=${{ secrets.DBMASTERUSERPASSWORD }},, 
+          DBMasterUserPassword=${{ secrets.DBMASTERUSERPASSWORD }}, 
           DBMasterUsername=koandina-admin, 
           Ambiente=${{ secrets.ENVIRONMENT }}, 
           SubnetId2=subnet-087d204dcd7f21a30, 
