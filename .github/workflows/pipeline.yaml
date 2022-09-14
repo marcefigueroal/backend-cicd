@@ -24,6 +24,6 @@ jobs:
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
         name: KoandinaMasterStack
-        template: master-deploy.yaml
-        parameter-overrides: "Environment=develop"
+        template: deployment-cognito.yaml
+        parameter-overrides: "Environment=${{ secrets.ENVIRONMENT }}"
         no-fail-on-empty-changeset: "1"

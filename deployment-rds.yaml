@@ -1,6 +1,90 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: “2010-09-09”
 Description: CFN template para crear un cluster de Aurora Postgres
+Parameters:
+  VpcId:
+    Description: Seleccionar un ID de VPC
+    Type: AWS::EC2::VPC::Id
+  SubnetId1:
+    Description: Seleccionar un ID para la subnet 1 de VPC group
+    Type: AWS::EC2::Subnet::Id
+  SubnetId2:
+    Description: Seleccionar un ID para la subnet 2 de VPC group
+    Type: AWS::EC2::Subnet::Id
+  AllowedCIDRCL:
+    Description: Ingresar el CIDR que tendrá acceso a consultar la BD
+    AllowedPattern: “(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})”
+    Type: String
+  AllowedCIDRBR:
+    Description: Ingresar el CIDR que tendrá acceso a consultar la BD
+    AllowedPattern: “(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})”
+    Type: String
+  AllowedCIDRVPC:
+    Description: Ingresar el CIDR que tendrá acceso a consultar la BD
+    AllowedPattern: “(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})”
+    Type: String        
+  DBName:
+    Description: Nombre de la base de datos para la instancia de Aurora PostgreSQL DB
+    Type: String
+  DBMasterUsername:
+    Description: Nombre de usuario master/super.
+    Type: String
+  DBMasterUserPassword:
+    Description: Password de la base de datos para el usuario master/super.
+    Type: String
+    NoEcho: “true”
+  DBInstanceClass:
+    Description: Tipo de clase de instancia de BD (db.t3.micro, db.t2.large, etc)
+    Type: String
+    Default : db.t3.medium
+  EnablePerformanceInsights:
+    Description: Habilitar Performance Insights para la instancia de DB.
+    Type: String
+    Default: false
+  MultiAZ:
+    Description: Habilitar en caso de requerir multi AZ
+    Type: String
+    Default: false
+  EncryptedStorage:
+    Description: Habilitar encryption at rest 
+    Type: String
+    Default: true
+  NombreAplicacion:
+    Description: Nombre de la aplicacion
+    Type: String
+  Ambiente:
+    Description: Ambiente de despliegue
+    Type: String
+    AllowedValues:
+      - “prd”
+      - “dev”
 
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Networking
+        Parameters:
+          - VpcId
+          - SubnetId1
+          - SubnetId2
+          - AllowedCIDRCL
+          - AllowedCIDRBR
+          - AllowedCIDRVPC
+      - Label:
+          default: Configuracion cluster
+        Parameters:
+          - DBName
+          - DBMasterUsername
+          - DBMasterUserPassword
+          - DBInstanceClass
+          - EnablePerformanceInsights
+          - MultiAZ
+          - EncryptedStorage
+      - Label:
+          default: Ambientacion de negocio
+        Parameters:
+          - NombreAplicacion
+          - Ambiente
 Resources:
   DBCluster:
     DependsOn:

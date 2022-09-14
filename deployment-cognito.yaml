@@ -5,6 +5,10 @@ Parameters:
   Environment:
     Type: String
     Description: Environment Name
+    AllowedValues:
+      - “prod”
+      - “develop”    
+    Default: develop
   CognitoUserPoolName:
     Type: String
     Default: KoandinaUserPool
