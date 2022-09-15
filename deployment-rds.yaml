@@ -101,7 +101,7 @@ Resources:
       DeletionProtection: false
       Engine: aurora-postgresql
       EngineMode: provisioned
-      EngineVersion: 10.11
+      EngineVersion: 13.7
       MasterUserPassword: !Ref DBMasterUserPassword
       MasterUsername: !Ref DBMasterUsername
       Port: 5432
@@ -114,7 +114,7 @@ Resources:
     Type: AWS::RDS::DBClusterParameterGroup
     Properties:
       Description: DB Cluster Parameter Group for your Aurora DB cluster
-      Family: aurora-postgresql10
+      Family: aurora-postgresql13
       Parameters:
         rds.logical_replication: 1
   DBInstance:
@@ -127,7 +127,7 @@ Resources:
       DBInstanceClass:
         Ref: DBInstanceClass
       Engine: aurora-postgresql
-      EngineVersion: 10.11
+      EngineVersion: 13.7
       DBSubnetGroupName:
         Ref: DBSubnetGroup
       DBParameterGroupName:
@@ -149,7 +149,7 @@ Resources:
     Type: AWS::RDS::DBParameterGroup
     Properties:
       Description: Database Parameter Group for your Aurora DB Instance
-      Family: aurora-postgresql10
+      Family: aurora-postgresql13
       Parameters:
         shared_preload_libraries: "pg_stat_statements, pg_hint_plan"
       Tags:
