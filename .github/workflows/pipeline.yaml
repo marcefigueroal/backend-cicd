@@ -56,5 +56,5 @@ jobs:
           SubnetId1=subnet-0a508be317f6263aa, 
           VpcId=vpc-08977f5f6bbf1d548,
           AllowedCIDRBR=192.168.1.0/27, 
-          DBName=forecast-dev, 
+          DBName=forecast, 
           AllowedCIDRCL=192.168.2.0/27

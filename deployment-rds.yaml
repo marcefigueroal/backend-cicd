@@ -94,7 +94,7 @@ Resources:
     DeletionPolicy: Snapshot
     UpdateReplacePolicy: Snapshot
     Properties:
-      DBClusterIdentifier: !Sub "${Ambiente}-${DBName}-cluster"
+      DBClusterIdentifier: !Sub "${Ambiente}-${DBName}"
       DBClusterParameterGroupName: !Ref DBClusterPG
       DBSubnetGroupName: !Ref DBSubnetGroup
       DatabaseName: !Ref DBName
