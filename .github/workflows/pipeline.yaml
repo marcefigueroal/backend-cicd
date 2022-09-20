@@ -57,4 +57,5 @@ jobs:
           VpcId=vpc-08977f5f6bbf1d548,
           AllowedCIDRBR=192.168.1.0/27, 
           DBName=forecast, 
-          AllowedCIDRCL=192.168.2.0/27
+          AllowedCIDRCL=192.168.2.0/27,
+          ProxyName=proxy-koandina

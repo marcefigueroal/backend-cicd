@@ -1,0 +1,44 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Root stack for RDS and RDS Proxy stacks
+
+Resources:
+
+  NestedStackDB:
+    Type: AWS::CloudFormation::Stack     
+    Properties:  
+      Parameters:
+        Ambiente: !Ref Ambiente
+        SubnetId2: !Ref SubnetId2
+        VpcId: !Ref VpcId
+        SubnetId1: !Ref SubnetId1
+        SubnetIds: !Ref SubnetIds
+        NombreAplicacion: !Ref NombreAplicacion
+        DBMasterUsername: !Ref DBMasterUsername
+        AllowedCIDRVPC: !Ref AllowedCIDRVPC
+        VpcId: !Ref VpcId
+        AllowedCIDRBR: !Ref AllowedCIDRBR
+        DBName: !Ref DBName
+        AllowedCIDRCL: !Ref AllowedCIDRCL
+      TemplateURL: https://koandina-deployment.s3.amazonaws.com/deployment-rds.yaml 
+
+  NestedStackProxy:  
+    Type: AWS::CloudFormation::Stack    
+    DependsOn: NestedStackDB
+    Properties:
+      TemplateURL: https://koandina-deployment.s3.amazonaws.com/deployment-rds-proxy.yaml     
+      Parameters:        
+        Ambiente: !Ref Ambiente
+        SubnetId2: !Ref SubnetId2
+        VpcId: !Ref VpcId
+        SubnetId1: !Ref SubnetId1
+        SubnetIds: !Ref SubnetIds
+        VpcId: !Ref VpcId
+        ProxyName: !Ref ProxyName
+        InstanceName:
+          Fn::GetAtt:
+          - NestedStackDB
+          - Outputs.InstanceName
+        ProxySecretArn:         
+          - NestedStackDB
+          - Outputs.ProxySecretArn       
+  

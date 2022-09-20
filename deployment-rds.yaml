@@ -28,10 +28,6 @@ Parameters:
   DBMasterUsername:
     Description: Nombre de usuario master/superuser.
     Type: String
-  DBMasterUserPassword:
-    Description: Password de la base de datos para el usuario master/super.
-    Type: String
-    NoEcho: "true"
   DBInstanceClass:
     Description: Tipo de clase de instancia de BD (db.t3.micro, db.t2.large, etc)
     Type: String
@@ -56,7 +52,7 @@ Parameters:
     Type: String
     AllowedValues:
       - "prod"
-      - "develop"
+      - "develop" 
 
 Metadata:
   AWS::CloudFormation::Interface:
@@ -86,10 +82,29 @@ Metadata:
           - NombreAplicacion
           - Ambiente
 Resources:
+
+  MySecretDB:
+    Type: 'AWS::SecretsManager::Secret'
+    Properties:
+      Name: MySecretDB
+      Description: "Este secreto genera dinamicamente una secret password."
+      GenerateSecretString:
+        SecretStringTemplate: '{"username": "koadmin"}'
+        GenerateStringKey: "password"
+        PasswordLength: 20
+        ExcludeCharacters: '"@/\'
+      Tags:
+        - Key: Name
+          Value: !Ref DBName
+        - Key: Ambiente de despliegue
+          Value: !Ref Ambiente
+
+
   DBCluster:
     DependsOn:
       - DBSubnetGroup
       - DBClusterPG
+      - MySecretDB
     Type: AWS::RDS::DBCluster
     DeletionPolicy: Snapshot
     UpdateReplacePolicy: Snapshot
@@ -102,8 +117,8 @@ Resources:
       Engine: aurora-postgresql
       EngineMode: provisioned
       EngineVersion: 13.7
-      MasterUserPassword: !Ref DBMasterUserPassword
-      MasterUsername: !Ref DBMasterUsername
+      MasterUsername: !Join ['', ['{{resolve:secretsmanager:', !Ref MySecretDB, ':SecretString:username}}' ]]
+      MasterUserPassword: !Join ['', ['{{resolve:secretsmanager:', !Ref MySecretDB, ':SecretString:password}}' ]]      
       Port: 5432
       SourceRegion: !Ref 'AWS::Region'
       StorageEncrypted: !Ref EncryptedStorage
@@ -192,6 +207,7 @@ Resources:
         Value: !Ref DBName
       - Key: Ambiente de despliegue
         Value: !Ref Ambiente
+        
 Outputs:
   RDSEndpoint:
     Description: RDS Database Endpoint
@@ -200,5 +216,12 @@ Outputs:
         - DBInstance
         - Endpoint.Address
     Export:
-      Name:
-        Fn::Sub: "RDSEndpoint"
+      Name: !Sub "RDSEndpoint"
+  ProxySecretArn:
+    Description: Secret ARN DB
+    Value: !GetAtt MySecretDB.Arn      
+  InstanceName:
+    Description: DB Cluster Name
+    Value: !GetAtt DBInstance  
+    Export: !Sub "${Ambiente}-${DBName}"   
+

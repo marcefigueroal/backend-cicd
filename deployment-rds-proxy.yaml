@@ -1,0 +1,105 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CFN template para crear un cluster de Aurora Postgres
+Parameters:
+  SubnetIds:
+    Type: String    
+    Default: subnet-087d204dcd7f21a30, subnet-0a508be317f6263aa      
+  VpcId: 
+    Description: Seleccionar un ID de VPC para el despliegue    
+    Type: AWS::EC2::VPC::Id
+  SubnetId1:
+    Description: Seleccionar un ID para la subnet 1 de VPC group
+    Type: AWS::EC2::Subnet::Id
+  SubnetId2:
+    Description: Seleccionar un ID para la subnet 2 de VPC group
+    Type: AWS::EC2::Subnet::Id   
+  ProxyName:
+    Description: Nombre del servidor proxy
+    Type: String
+  Ambiente:
+    Description: Ambiente de despliegue
+    Type: String
+    AllowedValues:
+      - "prod"
+      - "develop"     
+  InstanceName:
+    Description: Nombre de la base de datos para la instancia de Aurora PostgreSQL DB
+    Type: String   
+  ProxySecretArn:
+    Description: ARN del secreto para acceder a la BD    
+    Type: String
+
+Resources:
+
+  ProxySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: koandina-rds-proxy-security-group
+      GroupDescription: Allow access to proxy 
+      VpcId: !Ref vpcid
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          CidrIp: !Ref SubnetId1
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          CidrIp: !Ref SubnetId2
+
+  SecretReaderRoleArn:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - rds.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: AWSAccessSecret
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "secretsmanager:GetSecretValue"
+                Resource:
+                  - !Ref ProxySecretArn
+        - PolicyName: AWSAccessKMS
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "kms:Decrypt"
+                Resource:
+                  - "*"             
+
+  DBProxyAurora:
+    DependsOn:
+      - "SecretReaderRoleArn"
+    Type: AWS::RDS::DBProxy
+    Properties:
+      DebugLogging: true
+      DBProxyName: !Ref ProxyName
+      EngineFamily: POSTGRESQL
+      IdleClientTimeout: 120
+      RequireTLS: true
+      RoleArn:  !GetAtt SecretReaderRoleArn.Arn 
+      VpcSecurityGroupIds:
+        - !Ref ProxySecurityGroup
+      Auth:
+        - {AuthScheme: SECRETS, SecretArn: !Ref ProxySecretArn, IAMAuth: DISABLED}
+      VpcSubnetIds:
+        Fn::Split: [",", !Ref SubnetIds]
+
+  ProxyTargetGroup:
+    Type: AWS::RDS::DBProxyTargetGroup
+    Properties:
+      DBProxyName: !Ref DBProxyAurora
+      DBClusterIdentifiers: [!Ref InstanceName]
+      TargetGroupName: default
