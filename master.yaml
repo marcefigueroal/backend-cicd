@@ -74,7 +74,7 @@ Resources:
         SubnetIds: !Ref SubnetIds
         VpcId: !Ref VpcId
         ProxyName: !Ref ProxyName
-        ProxySecretArn:  
-          Fn::GetAtt: [NestedStackDB,Outputs.ProxySecretArn]  
-        DBInstanceName:  
-          Fn::GetAtt: [NestedStackDB,Outputs.ClusterName]         
+        ProxySecretArn: !GetAtt NestedStackDB.Outputs.DBInstanceName
+        DBInstanceName: !GetAtt NestedStackDB.Outputs.ProxySecretArn    
+        SubnetIds: !Ref SubnetIds
+        
