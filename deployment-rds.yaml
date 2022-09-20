@@ -220,4 +220,4 @@ Outputs:
     Value: !GetAtt MySecretDB.Arn
   DBInstanceName:
     Description: DB Cluster Name
-    Value: !Sub "${Ambiente}-${DBName}"
+    Value: "cluster-koandina"
