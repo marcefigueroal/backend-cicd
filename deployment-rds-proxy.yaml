@@ -22,7 +22,7 @@ Parameters:
     AllowedValues:
       - "prod"
       - "develop"     
-  InstanceName:
+  DBInstanceName:
     Description: Nombre de la base de datos para la instancia de Aurora PostgreSQL DB
     Type: String   
   ProxySecretArn:
@@ -101,5 +101,5 @@ Resources:
     Type: AWS::RDS::DBProxyTargetGroup
     Properties:
       DBProxyName: !Ref DBProxyAurora
-      DBClusterIdentifiers: [!Ref InstanceName]
+      DBClusterIdentifiers: [!Ref DBInstanceName]
       TargetGroupName: default

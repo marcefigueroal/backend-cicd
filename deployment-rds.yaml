@@ -217,9 +217,7 @@ Outputs:
         - Endpoint.Address
   ProxySecretArn:
     Description: Secret ARN DB
-    Value: !GetAtt MySecretDB.Arn      
-  InstanceName:
+    Value: !GetAtt MySecretDB.Arn
+  DBInstanceName:
     Description: DB Cluster Name
-    Value: !Sub "${Ambiente}-${DBName}"   
-
-
+    Value: !Sub "${Ambiente}-${DBName}"
