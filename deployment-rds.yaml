@@ -212,6 +212,8 @@ Outputs:
   ClusterName:
     Description: RDS Database Name
     Value: !Sub "${Ambiente}-${DBName}"   
+    Name: ClusterName
   ProxySecretArn:
     Description: Secret ARN DB
     Value: !GetAtt MySecretDB.Arn
+     Name: ProxySecretArn
