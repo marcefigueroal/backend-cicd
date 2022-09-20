@@ -209,11 +209,9 @@ Resources:
         Value: !Ref Ambiente
         
 Outputs:
-  ClusterName:
+  DBInstanceName:
     Description: RDS Database Name
-    Value: !Sub "${Ambiente}-${DBName}"  
-    Export:
-      Name: ClusterName
+    Value: !Sub "${Ambiente}-${DBName}"
   ProxySecretArn:
     Description: Secret ARN DB
     Value: !GetAtt MySecretDB.Arn
