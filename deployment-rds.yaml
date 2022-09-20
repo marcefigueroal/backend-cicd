@@ -218,6 +218,3 @@ Outputs:
   ProxySecretArn:
     Description: Secret ARN DB
     Value: !GetAtt MySecretDB.Arn
-  DBInstanceName:
-    Description: DB Cluster Name
-    Value: "cluster-koandina"
