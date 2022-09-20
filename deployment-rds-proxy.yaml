@@ -25,6 +25,7 @@ Parameters:
   DBInstanceName:
     Description: Nombre de la base de datos para la instancia de Aurora PostgreSQL DB
     Type: String   
+    Default: cluster-koandina
   ProxySecretArn:
     Description: ARN del secreto para acceder a la BD    
     Type: String
