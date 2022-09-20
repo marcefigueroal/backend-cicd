@@ -49,7 +49,6 @@ Resources:
         SubnetId2: !Ref SubnetId2
         VpcId: !Ref VpcId
         SubnetId1: !Ref SubnetId1
-        SubnetIds: !Ref SubnetIds
         NombreAplicacion: !Ref NombreAplicacion
         DBMasterUsername: !Ref DBMasterUsername
         AllowedCIDRVPC: !Ref AllowedCIDRVPC
