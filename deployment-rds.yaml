@@ -215,13 +215,11 @@ Outputs:
       Fn::GetAtt:
         - DBInstance
         - Endpoint.Address
-    Export:
-      Name: !Sub "RDSEndpoint"
   ProxySecretArn:
     Description: Secret ARN DB
     Value: !GetAtt MySecretDB.Arn      
   InstanceName:
     Description: DB Cluster Name
-    Value: !GetAtt DBInstance  
-    Export: !Sub "${Ambiente}-${DBName}"   
+    Value: !Sub "${Ambiente}-${DBName}"   
+
 
