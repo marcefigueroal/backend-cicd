@@ -8,6 +8,7 @@ on:
     branches: ["develop"]
 
 jobs:
+
   deploy_aws_cognito:
     runs-on: ubuntu-latest
     environment: develop
@@ -44,7 +45,7 @@ jobs:
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
         name: KoandinaAuroraPostgre
-        template: deployment-rds.yaml
+        template: deployment-rds-nested.yaml
         no-fail-on-empty-changeset: "1"     
         parameter-overrides: >-
           NombreAplicacion=Aurora-Forecast, 

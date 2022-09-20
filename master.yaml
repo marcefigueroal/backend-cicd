@@ -1,6 +1,44 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: Root stack for RDS and RDS Proxy stacks
 
+Parameters:
+  NombreAplicacion:
+    Description: Nombre de la aplicacion
+    Type: String
+  DBMasterUserPassword:
+    Description: Contraseña de la base de datos
+    Type: String
+  DBMasterUsername:
+    Description: Nombre de usuario master/superuser.
+    Type: String
+  Ambiente:
+    Description: Ambiente
+    Type: String
+  SubnetId2 :
+    Description: Subnet id 
+    Type: String
+  AllowedCIDRVPC:
+    Description: VPC
+    Type: String
+  SubnetId1:
+    Description: Subnet id 
+    Type: String
+  VpcId:
+    Description: VPC id 
+    Type: String
+  AllowedCIDRBR:
+    Description: CIDR para Brasil
+    Type: String
+  DBName:
+    Description: Nombre de la BD
+    Type: String
+  AllowedCIDRCL:
+    Description: CIDR para Chile
+    Type: String
+  ProxyName:
+    Description: Nombre del Proxy
+    Type: String
+
 Resources:
 
   NestedStackDB:
