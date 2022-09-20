@@ -209,12 +209,9 @@ Resources:
         Value: !Ref Ambiente
         
 Outputs:
-  RDSEndpoint:
-    Description: RDS Database Endpoint
-    Value:
-      Fn::GetAtt:
-        - DBInstance
-        - Endpoint.Address
+  ClusterName:
+    Description: RDS Database Name
+    Value: !Sub "${Ambiente}-${DBName}"   
   ProxySecretArn:
     Description: Secret ARN DB
     Value: !GetAtt MySecretDB.Arn
