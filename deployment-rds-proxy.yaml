@@ -1,9 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: CFN template para crear un cluster de Aurora Postgres
 Parameters:
-  SubnetIds:
-    Type: String    
-    Default: subnet-087d204dcd7f21a30, subnet-0a508be317f6263aa      
   VpcId: 
     Description: Seleccionar un ID de VPC para el despliegue    
     Type: AWS::EC2::VPC::Id
@@ -102,7 +99,8 @@ Resources:
       Auth:
         - {AuthScheme: SECRETS, SecretArn: !Ref ProxySecretArn, IAMAuth: DISABLED}
       VpcSubnetIds:
-        Fn::Split: [",", !Ref SubnetIds]
+        - Ref: SubnetId1
+        - Ref: SubnetId2
 
   ProxyTargetGroup:
     DependsOn: 
