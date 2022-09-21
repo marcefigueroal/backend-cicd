@@ -210,10 +210,17 @@ Resources:
         
 Outputs:
   DBInstanceName:
-    Description: RDS Database Name
-    Value: !Sub "${Ambiente}-${DBName}"
+    Description: RDS Database Endpoint
+    Value:
+      Fn::GetAtt:
+        - DBInstance
+        - Endpoint.Address
+    Export:
+      Name: !GetAtt "RDSEndpoint"    
   ProxySecretArn:
     Description: Secret ARN DB
     Value: !GetAtt MySecretDB.Arn
     Export:    
       Name: ProxySecretArn
+
+
