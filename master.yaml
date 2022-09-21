@@ -35,42 +35,55 @@ Parameters:
   ProxyName:
     Description: Nombre del Proxy
     Type: String
+  Project:
+    Description: Nombre del Proyecto
+    Type: String  
+
 
 Resources:
 
-  NestedStackDB:
+  NestedStackSecrets
     Type: AWS::CloudFormation::Stack     
     DeletionPolicy: Retain       
     Properties:  
+      TemplateURL: https://koandina-deployment.s3.amazonaws.com/deployment-secret.yaml    
       Parameters:
         Ambiente: !Ref Ambiente
-        SubnetId2: !Ref SubnetId2
-        VpcId: !Ref VpcId
-        SubnetId1: !Ref SubnetId1
-        NombreAplicacion: !Ref NombreAplicacion
         DBMasterUsername: !Ref DBMasterUsername
-        AllowedCIDRVPC: !Ref AllowedCIDRVPC
-        VpcId: !Ref VpcId
-        AllowedCIDRBR: !Ref AllowedCIDRBR
-        DBName: !Ref DBName
-        AllowedCIDRCL: !Ref AllowedCIDRCL
-      TemplateURL: https://koandina-deployment.s3.amazonaws.com/deployment-rds.yaml
 
-  NestedStackProxy:  
-    Type: AWS::CloudFormation::Stack    
-    DependsOn: NestedStackDB
-    Properties:
-      TemplateURL: https://koandina-deployment.s3.amazonaws.com/deployment-rds-proxy.yaml
-      Parameters:        
-        Ambiente: !Ref Ambiente
-        SubnetId2: !Ref SubnetId2
-        VpcId: !Ref VpcId
-        SubnetId1: !Ref SubnetId1
-        ProxyName: !Ref ProxyName
-        AllowedCIDRBR: !Ref AllowedCIDRBR
-        AllowedCIDRCL: !Ref AllowedCIDRCL        
-        DBName: !Ref DBName        
-        ProxySecretArn:
-          Fn::GetAtt:
-            - NestedStackDB
-            - Outputs.SecretDB          
+  # NestedStackDB:
+  #   Type: AWS::CloudFormation::Stack     
+  #   DeletionPolicy: Retain       
+  #   Properties:  
+  #     Parameters:
+  #       Ambiente: !Ref Ambiente
+  #       SubnetId2: !Ref SubnetId2
+  #       VpcId: !Ref VpcId
+  #       SubnetId1: !Ref SubnetId1
+  #       NombreAplicacion: !Ref NombreAplicacion
+  #       DBMasterUsername: !Ref DBMasterUsername
+  #       AllowedCIDRVPC: !Ref AllowedCIDRVPC
+  #       VpcId: !Ref VpcId
+  #       AllowedCIDRBR: !Ref AllowedCIDRBR
+  #       DBName: !Ref DBName
+  #       AllowedCIDRCL: !Ref AllowedCIDRCL
+  #     TemplateURL: https://koandina-deployment.s3.amazonaws.com/deployment-rds.yaml
+
+  # NestedStackProxy:  
+  #   Type: AWS::CloudFormation::Stack    
+  #   DependsOn: NestedStackDB
+  #   Properties:
+  #     TemplateURL: https://koandina-deployment.s3.amazonaws.com/deployment-rds-proxy.yaml
+  #     Parameters:        
+  #       Ambiente: !Ref Ambiente
+  #       SubnetId2: !Ref SubnetId2
+  #       VpcId: !Ref VpcId
+  #       SubnetId1: !Ref SubnetId1
+  #       ProxyName: !Ref ProxyName
+  #       AllowedCIDRBR: !Ref AllowedCIDRBR
+  #       AllowedCIDRCL: !Ref AllowedCIDRCL        
+  #       DBName: !Ref DBName        
+  #       ProxySecretArn:
+  #         Fn::GetAtt:
+  #           - NestedStackDB
+  #           - Outputs.SecretDB          

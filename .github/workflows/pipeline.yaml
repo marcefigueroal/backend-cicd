@@ -39,3 +39,4 @@ jobs:
             DBName=forecast, 
             AllowedCIDRCL=192.168.2.0/27,
             ProxyName=rdsproxy-koandina
+            Project=Koandina-Forecast
