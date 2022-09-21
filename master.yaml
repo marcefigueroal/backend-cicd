@@ -72,7 +72,6 @@ Resources:
         VpcId: !Ref VpcId
         SubnetId1: !Ref SubnetId1
         SubnetIds: !Ref SubnetIds
-        VpcId: !Ref VpcId
         ProxyName: !Ref ProxyName
         DBName: !Ref DBName        
         ProxySecretArn:
