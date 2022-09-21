@@ -79,5 +79,5 @@ Resources:
         ProxySecretArn:
           Fn::GetAtt:
             - NestedStackDB
-            - Outputs.SecretDB           
-        SubnetIds: !Ref SubnetIds 
+            - Outputs.SecretDB          
+        SubnetIds: !Ref SubnetIds

@@ -88,7 +88,7 @@ Resources:
   DBProxyAurora:
     DependsOn: 
       - SecretReaderRoleArn
-      - ProxySecurityGroup  
+      - ProxySecurityGroup
     Type: AWS::RDS::DBProxy
     Properties:
       DebugLogging: true
@@ -105,7 +105,8 @@ Resources:
         Fn::Split: [",", !Ref SubnetIds]
 
   ProxyTargetGroup:
-    DependsOn: DBProxyAurora
+    DependsOn: 
+      - DBProxyAurora
     Type: AWS::RDS::DBProxyTargetGroup
     Properties:
       DBProxyName: !Ref DBProxyAurora

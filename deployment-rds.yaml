@@ -136,6 +136,7 @@ Resources:
     DependsOn:
       - DBSubnetGroup
       - DBParameterGroup
+    DeletionPolicy: Retain  
     Type: AWS::RDS::DBInstance
     Properties:
       DBInstanceIdentifier: !Sub "${Ambiente}-${DBName}-instance"
