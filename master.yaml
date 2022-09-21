@@ -42,7 +42,7 @@ Parameters:
 
 Resources:
 
-  NestedStackSecrets
+  NestedStackSecrets:
     Type: AWS::CloudFormation::Stack     
     DeletionPolicy: Retain       
     Properties:  
