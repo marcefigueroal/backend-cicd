@@ -217,10 +217,3 @@ Outputs:
         - Endpoint.Address
     Export:
       Name: !GetAtt "RDSEndpoint"    
-  ProxySecretArn:
-    Description: Secret ARN DB
-    Value: !GetAtt MySecretDB.Arn
-    Export:    
-      Name: ProxySecretArn
-
-
