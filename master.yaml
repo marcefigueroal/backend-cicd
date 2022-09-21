@@ -73,6 +73,8 @@ Resources:
         SubnetId1: !Ref SubnetId1
         SubnetIds: !Ref SubnetIds
         ProxyName: !Ref ProxyName
+        AllowedCIDRBR: !Ref AllowedCIDRBR
+        AllowedCIDRCL: !Ref AllowedCIDRC        
         DBName: !Ref DBName        
         ProxySecretArn:
           Fn::GetAtt:
