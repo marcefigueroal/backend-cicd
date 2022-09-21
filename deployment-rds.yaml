@@ -208,3 +208,9 @@ Resources:
       - Key: Ambiente de despliegue
         Value: !Ref Ambiente
         
+Outputs:
+  RDSEndpoint:
+    Description: RDS Database Endpoint
+    Value: !GetAtt: Endpoint.Address
+    Export:
+      Name: !Sub RDSEndpoint
