@@ -78,4 +78,4 @@ Resources:
           Fn::GetAtt:
             - NestedStackDB
             - Outputs.SecretDB           
-        SubnetIds: !Ref SubnetIds
+        SubnetIds: !Ref SubnetIds 

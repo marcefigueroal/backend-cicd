@@ -106,7 +106,7 @@ Resources:
       - DBClusterPG
       - MySecretDB
     Type: AWS::RDS::DBCluster
-    DeletionPolicy: Snapshot
+    DeletionPolicy: Retain
     UpdateReplacePolicy: Snapshot
     Properties:
       DBClusterIdentifier: !Sub "${Ambiente}-${DBName}"

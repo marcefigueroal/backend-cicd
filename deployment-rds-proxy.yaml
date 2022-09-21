@@ -13,6 +13,12 @@ Parameters:
   SubnetId2:
     Description: Seleccionar un ID para la subnet 2 de VPC group
     Type: AWS::EC2::Subnet::Id   
+  AllowedCIDRCL:
+    Description: Segmento Chile
+    Type: String
+  AllowedCIDRBR: 
+    Description: Segmento Brasil
+    Type: String     
   ProxyName:
     Description: Nombre del servidor proxy
     Type: String
@@ -41,11 +47,11 @@ Resources:
         - IpProtocol: tcp
           FromPort: 5432
           ToPort: 5432
-          CidrIp: !Ref SubnetId1
+          CidrIp: !Ref AllowedCIDRCL
         - IpProtocol: tcp
           FromPort: 5432
           ToPort: 5432
-          CidrIp: !Ref SubnetId2
+          CidrIp: !Ref AllowedCIDRBR
 
   SecretReaderRoleArn:
     Type: "AWS::IAM::Role"
@@ -80,8 +86,9 @@ Resources:
                   - "*"             
 
   DBProxyAurora:
-    DependsOn:
-      - "SecretReaderRoleArn"
+    DependsOn: 
+      - SecretReaderRoleArn
+      - ProxySecurityGroup  
     Type: AWS::RDS::DBProxy
     Properties:
       DebugLogging: true
@@ -98,6 +105,7 @@ Resources:
         Fn::Split: [",", !Ref SubnetIds]
 
   ProxyTargetGroup:
+    DependsOn: DBProxyAurora
     Type: AWS::RDS::DBProxyTargetGroup
     Properties:
       DBProxyName: !Ref DBProxyAurora
