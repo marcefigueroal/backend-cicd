@@ -35,7 +35,6 @@ Parameters:
   ProxyName:
     Description: Nombre del Proxy
     Type: String
-    
 
 Resources:
 
@@ -67,7 +66,6 @@ Resources:
         SubnetId2: !Ref SubnetId2
         VpcId: !Ref VpcId
         SubnetId1: !Ref SubnetId1
-        SubnetIds: !Ref SubnetIds
         ProxyName: !Ref ProxyName
         AllowedCIDRBR: !Ref AllowedCIDRBR
         AllowedCIDRCL: !Ref AllowedCIDRCL        
