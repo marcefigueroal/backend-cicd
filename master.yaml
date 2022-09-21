@@ -65,7 +65,7 @@ Resources:
         DBName: !Ref DBName
         AllowedCIDRCL: !Ref AllowedCIDRCL
         Project: !Ref Project
-        ProxySecretArn:
+        SecretArn:
           Fn::GetAtt:
             - NestedStackSecrets
             - Outputs.SecretDB           

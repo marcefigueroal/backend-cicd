@@ -46,13 +46,17 @@ Parameters:
     Default: true
   Ambiente:
     Description: Ambiente de despliegue
-    Type: String
-  Project:
-    Description: Nombre del proyecto
-    Type: String      
+    Type: String 
     AllowedValues:
       - "prod"
       - "develop" 
+  Project:
+    Description: Nombre del proyecto
+    Type: String           
+  SecretArn:
+    Description: ARN del secreto
+    Type: String      
+
 
 Metadata:
   AWS::CloudFormation::Interface:
@@ -86,7 +90,6 @@ Resources:
     DependsOn:
       - DBSubnetGroup
       - DBClusterPG
-      - MySecretDB
     Type: AWS::RDS::DBCluster
     DeletionPolicy: Retain
     UpdateReplacePolicy: Snapshot
@@ -99,8 +102,8 @@ Resources:
       Engine: aurora-postgresql
       EngineMode: provisioned
       EngineVersion: 13.7
-      MasterUsername: !Join ['', ['{{resolve:secretsmanager:', !Ref MySecretDB, ':SecretString:username}}' ]]
-      MasterUserPassword: !Join ['', ['{{resolve:secretsmanager:', !Ref MySecretDB, ':SecretString:password}}' ]]      
+      MasterUsername: !Join ['', ['{{resolve:secretsmanager:', !Ref SecretArn, ':SecretString:username}}' ]]
+      MasterUserPassword: !Join ['', ['{{resolve:secretsmanager:', !Ref SecretArn, ':SecretString:password}}' ]]      
       Port: 5432
       SourceRegion: !Ref 'AWS::Region'
       StorageEncrypted: !Ref EncryptedStorage
