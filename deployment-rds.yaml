@@ -175,7 +175,7 @@ Resources:
   DBSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
     Properties:
-      DBSubnetGroupDescription: Subnet Grouo for Aurora DB Cluster
+      DBSubnetGroupDescription: Subnet Group forAurora DB Cluster
       SubnetIds:
         - Ref: SubnetId1
         - Ref: SubnetId2
