@@ -44,12 +44,12 @@ Parameters:
     Description: Habilitar encryption at rest 
     Type: String
     Default: true
-  NombreAplicacion:
-    Description: Nombre de la aplicacion
-    Type: String
   Ambiente:
     Description: Ambiente de despliegue
     Type: String
+  Project:
+    Description: Nombre del proyecto
+    Type: String      
     AllowedValues:
       - "prod"
       - "develop" 
@@ -78,27 +78,9 @@ Metadata:
       - Label:
           default: Ambientacion de negocio
         Parameters:
-          - NombreAplicacion
+          - Project
           - Ambiente
 Resources:
-
-  MySecretDB:
-    Type: 'AWS::SecretsManager::Secret'
-    DeletionPolicy: Retain
-    Properties:
-      Name: MySecretDB
-      Description: "Este secreto genera dinamicamente una secret password."
-      GenerateSecretString:
-        SecretStringTemplate: '{"username": "koadmin"}'
-        GenerateStringKey: "password"
-        PasswordLength: 20
-        ExcludeCharacters: '"@/\'
-      Tags:
-        - Key: Name
-          Value: !Ref DBName
-        - Key: Ambiente de despliegue
-          Value: !Ref Ambiente
-
 
   DBCluster:
     DependsOn:
@@ -158,10 +140,18 @@ Resources:
       PubliclyAccessible: false
       DBClusterIdentifier: !Ref DBCluster
       Tags:
-      - Key: Name
-        Value: !Ref DBName
-      - Key: Ambiente de despliegue
-        Value: !Ref Ambiente
+        - Key: Name
+          Value:  !Sub "koandina-${Project}-cl-${Ambiente}-db"
+        - Key: Ambiente de despliegue
+          Value: !Ref Ambiente
+        - Key: ResourceType
+          Value: DB Service
+        - Key: Partner
+          Value: Arkho
+        - Key: Project
+          Value: !Ref Project 
+
+
   DBParameterGroup:
     Type: AWS::RDS::DBParameterGroup
     DeletionPolicy: Retain
@@ -171,10 +161,16 @@ Resources:
       Parameters:
         shared_preload_libraries: "pg_stat_statements, pg_hint_plan"
       Tags:
-      - Key: Name
-        Value: !Ref DBName
-      - Key: Ambiente de despliegue
-        Value: !Ref Ambiente
+        - Key: Name
+          Value:  !Sub "koandina-${Project}-cl-${Ambiente}-pg"
+        - Key: Ambiente de despliegue
+          Value: !Ref Ambiente
+        - Key: ResourceType
+          Value: DB Service
+        - Key: Partner
+          Value: Arkho
+        - Key: Project
+          Value: !Ref Project 
   DBSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
     DeletionPolicy: Retain    
@@ -184,10 +180,16 @@ Resources:
         - Ref: SubnetId1
         - Ref: SubnetId2
       Tags:
-      - Key: Name
-        Value: !Ref DBName
-      - Key: Ambiente de despliegue
-        Value: !Ref Ambiente
+        - Key: Name
+          Value:  !Sub "koandina-${Project}-cl-${Ambiente}-dbsg"
+        - Key: Ambiente de despliegue
+          Value: !Ref Ambiente
+        - Key: ResourceType
+          Value: DB Service
+        - Key: Partner
+          Value: Arkho
+        - Key: Project
+          Value: !Ref Project 
   AuroraSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     DeletionPolicy: Retain
@@ -208,10 +210,16 @@ Resources:
             ToPort: 5432
             CidrIp: !Ref AllowedCIDRVPC                
       Tags:
-      - Key: Name
-        Value: !Ref DBName
-      - Key: Ambiente de despliegue
-        Value: !Ref Ambiente
+        - Key: Name
+          Value:  !Sub "koandina-${Project}-cl-${Ambiente}-dbsg"
+        - Key: Ambiente de despliegue
+          Value: !Ref Ambiente
+        - Key: ResourceType
+          Value: DB Service
+        - Key: Partner
+          Value: Arkho
+        - Key: Project
+          Value: !Ref Project 
 
 Outputs:
   RDSEndpoint:
@@ -223,6 +231,3 @@ Outputs:
     Export:
       Name:
         Fn::Sub: "RDSEndpoint"        
-  SecretDB:
-    Description: Datos secretos RDS
-    Value: !Ref MySecretDB

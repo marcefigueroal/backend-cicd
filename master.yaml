@@ -2,8 +2,8 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Root stack for RDS and RDS Proxy stacks
 
 Parameters:
-  NombreAplicacion:
-    Description: Nombre de la aplicacion
+  Project:
+    Description: Nombre del proyecto
     Type: String
   DBMasterUsername:
     Description: Nombre de usuario master/superuser.
@@ -35,10 +35,6 @@ Parameters:
   ProxyName:
     Description: Nombre del Proxy
     Type: String
-  Project:
-    Description: Nombre del Proyecto
-    Type: String  
-
 
 Resources:
 
@@ -52,23 +48,28 @@ Resources:
         DBMasterUsername: !Ref DBMasterUsername
         Project: !Ref Project
 
-  # NestedStackDB:
-  #   Type: AWS::CloudFormation::Stack     
-  #   DeletionPolicy: Retain       
-  #   Properties:  
-  #     Parameters:
-  #       Ambiente: !Ref Ambiente
-  #       SubnetId2: !Ref SubnetId2
-  #       VpcId: !Ref VpcId
-  #       SubnetId1: !Ref SubnetId1
-  #       NombreAplicacion: !Ref NombreAplicacion
-  #       DBMasterUsername: !Ref DBMasterUsername
-  #       AllowedCIDRVPC: !Ref AllowedCIDRVPC
-  #       VpcId: !Ref VpcId
-  #       AllowedCIDRBR: !Ref AllowedCIDRBR
-  #       DBName: !Ref DBName
-  #       AllowedCIDRCL: !Ref AllowedCIDRCL
-  #     TemplateURL: https://koandina-deployment.s3.amazonaws.com/deployment-rds.yaml
+  NestedStackDB:
+    Type: AWS::CloudFormation::Stack     
+    DeletionPolicy: Retain       
+    Properties:  
+      Parameters:
+        Ambiente: !Ref Ambiente
+        SubnetId2: !Ref SubnetId2
+        VpcId: !Ref VpcId
+        SubnetId1: !Ref SubnetId1
+        Project: !Ref Project
+        DBMasterUsername: !Ref DBMasterUsername
+        AllowedCIDRVPC: !Ref AllowedCIDRVPC
+        VpcId: !Ref VpcId
+        AllowedCIDRBR: !Ref AllowedCIDRBR
+        DBName: !Ref DBName
+        AllowedCIDRCL: !Ref AllowedCIDRCL
+        Project: !Ref Project
+        ProxySecretArn:
+          Fn::GetAtt:
+            - NestedStackSecrets
+            - Outputs.SecretDB           
+      TemplateURL: https://koandina-deployment.s3.amazonaws.com/deployment-rds.yaml
 
   # NestedStackProxy:  
   #   Type: AWS::CloudFormation::Stack    
