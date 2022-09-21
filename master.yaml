@@ -52,6 +52,7 @@ Resources:
     Type: AWS::CloudFormation::Stack     
     DeletionPolicy: Retain       
     Properties:  
+      TemplateURL: https://koandina-deployment.s3.amazonaws.com/deployment-rds.yaml      
       Parameters:
         Ambiente: !Ref Ambiente
         SubnetId2: !Ref SubnetId2
@@ -69,7 +70,7 @@ Resources:
           Fn::GetAtt:
             - NestedStackSecrets
             - Outputs.SecretDB           
-      TemplateURL: https://koandina-deployment.s3.amazonaws.com/deployment-rds.yaml
+
 
   # NestedStackProxy:  
   #   Type: AWS::CloudFormation::Stack    
