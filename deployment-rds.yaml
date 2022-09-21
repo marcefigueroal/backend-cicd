@@ -207,10 +207,17 @@ Resources:
         Value: !Ref DBName
       - Key: Ambiente de despliegue
         Value: !Ref Ambiente
-        
+
 Outputs:
   RDSEndpoint:
     Description: RDS Database Endpoint
-    Value: !GetAtt: Endpoint.Address
+    Value:
+      Fn::GetAtt:
+        - DBInstance
+        - Endpoint.Address
     Export:
-      Name: !Sub RDSEndpoint
+      Name:
+        Fn::Sub: "RDSEndpoint"        
+  SecretDB:
+    Description: 
+    Value: !GetAtt MySecretDB.Arn

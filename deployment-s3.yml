@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: CFN template para crear  Bucket Artifacts
+Parameters:
+  NombreAplicacion:
+    Description: Nombre de la aplicacion
+    Type: String
+  Ambiente:
+    Description: Ambiente de despliegue
+    Type: String
+    AllowedValues:
+      - "prod"
+      - "develop"   
+
+Resources:
+  S3BucketArtifacts:
+    Type: 'AWS::S3::Bucket'
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: !Sub Artifacs-${Ambiente}-${NombreAplicacion}
+
+  S3BucketSignedURL:
+    Type: 'AWS::S3::Bucket'
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: !Sub SignedURL-${Ambiente}-${NombreAplicacion}

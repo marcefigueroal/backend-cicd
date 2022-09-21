@@ -22,10 +22,9 @@ Parameters:
     AllowedValues:
       - "prod"
       - "develop"     
-  DBInstanceName:
+  DBName:
     Description: Nombre de la base de datos para la instancia de Aurora PostgreSQL DB
     Type: String   
-    Default: cluster-koandina
   ProxySecretArn:
     Description: ARN del secreto para acceder a la BD    
     Type: String
@@ -102,5 +101,5 @@ Resources:
     Type: AWS::RDS::DBProxyTargetGroup
     Properties:
       DBProxyName: !Ref DBProxyAurora
-      DBClusterIdentifiers: [cluster-koandina]
+      DBClusterIdentifiers: [!Sub "${Ambiente}-${DBName}"]
       TargetGroupName: default
