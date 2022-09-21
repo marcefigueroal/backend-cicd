@@ -102,5 +102,5 @@ Resources:
     Type: AWS::RDS::DBProxyTargetGroup
     Properties:
       DBProxyName: !Ref DBProxyAurora
-      DBClusterIdentifiers: [!Ref DBInstanceName]
+      DBClusterIdentifiers: [cluster-koandina]
       TargetGroupName: default
