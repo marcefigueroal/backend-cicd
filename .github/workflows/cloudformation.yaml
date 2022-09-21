@@ -8,16 +8,15 @@ on:
     branches: [ "main" ]    
 
 jobs:
-
  buckets:
   runs-on: ubuntu-latest
   steps:
-    - uses: actions/checkout@v3    
-    - name: List S3
-    - run: |
-          aws s3 ls
+    - name: checkout 
+      uses: actions/checkout@v3    
+    - name: List buckets S3
+      run: |
+         aws s3 sync . https://koandina-deployment.s3.amazonaws.com/
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }} 
-
