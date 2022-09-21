@@ -220,4 +220,4 @@ Outputs:
         Fn::Sub: "RDSEndpoint"        
   SecretDB:
     Description: 
-    Value: !GetAtt MySecretDB.Arn
+    Value: !Ref MySecretDB
