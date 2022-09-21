@@ -208,13 +208,3 @@ Resources:
       - Key: Ambiente de despliegue
         Value: !Ref Ambiente
         
-Outputs:
-  RDSEndpoint:
-    Description: RDS Database Endpoint
-    Value:
-      Fn::GetAtt:
-        - DBInstance
-        - Endpoint.Address
-    Export:
-      Name:
-        Fn::Sub: "RDSEndpoint"
