@@ -9,23 +9,15 @@ on:
 
 jobs:
 
-  ubuntu_aws_cli:
-    runs-on: ubuntu-20.04
+  listS3:
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        include:
-          - CLI_NAME: "Latest v2"
-            AWS_CLI_VERSION: "2"     
-    name: ubuntu_aws_cli ${{ matrix.CLI_NAME }} ${{ matrix.AWS_CLI_VERSION }}
+        os: [ubuntu-18.04]
     steps:
-      - name: ubuntu_aws_cli ${{ matrix.CLI_NAME }}
-        id: install-aws-cli
-        uses: unfor19/install-aws-cli-action@master
-        with:
-          version: ${{ matrix.AWS_CLI_VERSION }}
-          rootdir: ${{ matrix.ROOTDIR }}
-          workdir: ${{ matrix.WORKDIR }}
+      - uses: chrislennon/action-aws-cli@v1.1
+      # All commands after this point have access to the AWS CLI
       - run: aws s3 ls
-        shell: bash
-    outputs:
-      target_job_status: ${{ job.status }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
