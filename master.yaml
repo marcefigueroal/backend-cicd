@@ -72,21 +72,21 @@ Resources:
             - Outputs.SecretDB           
 
 
-  # NestedStackProxy:  
-  #   Type: AWS::CloudFormation::Stack    
-  #   DependsOn: NestedStackDB
-  #   Properties:
-  #     TemplateURL: https://koandina-deployment.s3.amazonaws.com/deployment-rds-proxy.yaml
-  #     Parameters:        
-  #       Ambiente: !Ref Ambiente
-  #       SubnetId2: !Ref SubnetId2
-  #       VpcId: !Ref VpcId
-  #       SubnetId1: !Ref SubnetId1
-  #       ProxyName: !Ref ProxyName
-  #       AllowedCIDRBR: !Ref AllowedCIDRBR
-  #       AllowedCIDRCL: !Ref AllowedCIDRCL        
-  #       DBName: !Ref DBName        
-  #       ProxySecretArn:
-  #         Fn::GetAtt:
-  #           - NestedStackDB
-  #           - Outputs.SecretDB          
+  NestedStackProxy:  
+    Type: AWS::CloudFormation::Stack    
+    DependsOn: NestedStackDB
+    Properties:
+      TemplateURL: https://koandina-deployment.s3.amazonaws.com/deployment-rds-proxy.yaml
+      Parameters:        
+        Ambiente: !Ref Ambiente
+        SubnetId2: !Ref SubnetId2
+        VpcId: !Ref VpcId
+        SubnetId1: !Ref SubnetId1
+        ProxyName: !Ref ProxyName
+        AllowedCIDRBR: !Ref AllowedCIDRBR
+        AllowedCIDRCL: !Ref AllowedCIDRCL        
+        DBName: !Ref DBName        
+        ProxySecretArn:
+          Fn::GetAtt:
+            - NestedStackDB
+            - Outputs.SecretDB          
