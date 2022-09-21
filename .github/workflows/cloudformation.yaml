@@ -9,15 +9,23 @@ on:
 
 jobs:
 
-  deploy_aws_develop:
-    runs-on: ubuntu-latest
-    environment: develop
+  ubuntu_aws_cli:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        include:
+          - CLI_NAME: "Latest v2"
+            AWS_CLI_VERSION: "2"     
+    name: ubuntu_aws_cli ${{ matrix.CLI_NAME }} ${{ matrix.AWS_CLI_VERSION }}
     steps:
-    - uses: intuit/cfn-deploy@master
-      env:
-        AWS_REGION: ${{ secrets.AWS_REGION }} 
-        STACK_NAME: cfn-deploy
-        TEMPLATE_FILE: deployment.yml
-        PARAMETERS_FILE: parameter.json
-        AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
-        AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+      - name: ubuntu_aws_cli ${{ matrix.CLI_NAME }}
+        id: install-aws-cli
+        uses: unfor19/install-aws-cli-action@master
+        with:
+          version: ${{ matrix.AWS_CLI_VERSION }}
+          rootdir: ${{ matrix.ROOTDIR }}
+          workdir: ${{ matrix.WORKDIR }}
+      - run: aws s3 ls
+        shell: bash
+    outputs:
+      target_job_status: ${{ job.status }}
