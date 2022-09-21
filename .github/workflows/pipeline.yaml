@@ -9,27 +9,7 @@ on:
 
 jobs:
 
-  deploy_aws_cognito:
-    runs-on: ubuntu-latest
-    environment: develop
-    steps:
-    - uses: actions/checkout@v3    
-    - name: Configure AWS credentials
-      id: creds
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}   
-    - name: Deploy Cognito AWS CloudFormation
-      uses: aws-actions/aws-cloudformation-github-deploy@v1
-      with:
-        name: KoandinaCognitoUserPool
-        template: deployment-cognito.yaml
-        parameter-overrides: "Environment=${{ secrets.ENVIRONMENT }}"
-        no-fail-on-empty-changeset: "1"
-
-  deploy_aws_aurora:
+deploy_aws_aurora:
     runs-on: ubuntu-latest
     environment: develop
     steps:
