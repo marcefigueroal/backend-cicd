@@ -71,7 +71,6 @@ Metadata:
         Parameters:
           - DBName
           - DBMasterUsername
-          - DBMasterUserPassword
           - DBInstanceClass
           - EnablePerformanceInsights
           - MultiAZ
