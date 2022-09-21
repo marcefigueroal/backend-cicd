@@ -85,6 +85,7 @@ Resources:
 
   MySecretDB:
     Type: 'AWS::SecretsManager::Secret'
+    DeletionPolicy: Retain
     Properties:
       Name: MySecretDB
       Description: "Este secreto genera dinamicamente una secret password."
@@ -126,6 +127,7 @@ Resources:
       VpcSecurityGroupIds:
         - Ref: AuroraSecurityGroup
   DBClusterPG:
+    DeletionPolicy: Retain
     Type: AWS::RDS::DBClusterParameterGroup
     Properties:
       Description: DB Cluster Parameter Group for your Aurora DB cluster
@@ -163,6 +165,7 @@ Resources:
         Value: !Ref Ambiente
   DBParameterGroup:
     Type: AWS::RDS::DBParameterGroup
+    DeletionPolicy: Retain
     Properties:
       Description: Database Parameter Group for your Aurora DB Instance
       Family: aurora-postgresql13
@@ -175,6 +178,7 @@ Resources:
         Value: !Ref Ambiente
   DBSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
+    DeletionPolicy: Retain    
     Properties:
       DBSubnetGroupDescription: Subnet Group forAurora DB Cluster
       SubnetIds:
@@ -187,6 +191,7 @@ Resources:
         Value: !Ref Ambiente
   AuroraSecurityGroup:
     Type: AWS::EC2::SecurityGroup
+    DeletionPolicy: Retain
     Properties:
       GroupDescription: Habilita puerto del servicio postgres para conexion desde VPN Koandina y VPC
       VpcId: !Ref VpcId

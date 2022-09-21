@@ -1,0 +1,434 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Template para despliegue de infra estructura ECS proyecto Koandina.
+
+Parameters:
+
+  Project:
+    Type: String
+    Default: Forecast
+
+  Environment:
+    Type: String
+    AllowedValues:
+    - prod
+    - develop
+    Default: develop
+
+  BalancerType:
+    Type: String
+    AllowedValues:
+    - internal
+    - internet-facing
+    Default: internet-facing
+    Description: Crea un app load balancer de tipo public (acceso a internet) o privado.
+
+  HTTPSEnable:
+    Type: String
+    AllowedValues:
+    - "si"
+    - "no"
+    Default: "no"
+    Description: Habilita el listener https para el ALB. Si se habilita el certificado es obligatorio.
+
+  CertificateArn:
+    Type: String
+    Default: ARN
+    Description: Es obligatorio si se usa HTTPS
+
+  VpcId:
+    Type: 'AWS::EC2::VPC::Id'
+
+  PrivateSubnet1:
+    Description: Identificador de la subred 1
+    Type: 'AWS::EC2::Subnet::Id'
+
+  PrivateSubnet2:
+    Description: Identificador de la subred 2
+    Type: 'AWS::EC2::Subnet::Id'
+
+  PublicSubnet1:
+    Description: Subered para montar ELB
+    Type: 'AWS::EC2::Subnet::Id'
+
+  PublicSubnet2:
+    Description: Subered para montar ELB
+    Type: 'AWS::EC2::Subnet::Id'
+
+  EcsImage:
+    Type: String
+    Default: nginx
+    Description: Identificador de la imagen Docker. Para ECR, debe agregar el ARN.
+
+  ImagePort:
+    Type: Number
+    Default: 80
+    Description: Puerto que expone el contenedor y el host del contenedor.
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:  
+          default: General Config
+        Parameters: 
+        - Project
+        - Environment
+      - Label: 
+          default: Network Config
+        Parameters:
+        - VpcId
+        - PublicSubnet1
+        - PublicSubnet2
+        - PrivateSubnet1
+        - PrivateSubnet2
+      - Label: 
+          default: Endpoint Config
+        Parameters:
+        - BalancerType
+        - HTTPSEnable
+        - CertificateArn
+      - Label: 
+          default: Image Config
+        Parameters:
+        - EcsImage
+        - ImagePort
+
+Conditions:
+  ConfigSSL:
+    !Equals [ !Ref HTTPSEnable, "si" ]  
+  NotSSL:
+    !Equals [ !Ref HTTPSEnable, "no" ]
+
+  IsInternal:
+    !Equals [ !Ref BalancerType , "internal" ]
+  
+Resources:
+
+  LoadBalancerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription:  Security Group para Loadbalancer
+      GroupName:  !Sub "koandina-${Project}-cl-${Environment}-sg-alb"
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - CidrIp: '0.0.0.0/0'
+          Description: Acceso a http
+          IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+        - CidrIp: '0.0.0.0/0'
+          Description: Acceso a http
+          IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+      Tags:
+        - Key: Name
+          Value:  !Sub "koandina-${Project}-cl-${Environment}-sg-alb"
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: ResourceType
+          Value: SecurityGroup
+        - Key: Partner
+          Value: Arkho
+        - Key: Project
+          Value: !Ref Project
+
+  EcsClusterSecurityGroup:
+    DependsOn:
+    - LoadBalancerSecurityGroup
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription:  Security Group para despliegue de ECS y Fargate
+      GroupName:  !Sub "koandina-${Project}-cl-${Environment}-sg-ecs"
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - SourceSecurityGroupId: !GetAtt LoadBalancerSecurityGroup.GroupId
+          Description: Acceso a http
+          IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+      Tags:
+        - Key: Name
+          Value:  !Sub "koandina-${Project}-cl-${Environment}-sg-ecs"
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: ResourceType
+          Value: SecurityGroup
+        - Key: Partner
+          Value: Arkho
+        - Key: Project
+          Value: !Ref Project
+        
+  EcsLoadBalancer:
+    DependsOn:
+    - LoadBalancerSecurityGroup
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Scheme: !Ref BalancerType 
+      Name:  !Sub "koandina-${Project}-cl-${Environment}-alb-ecs"
+      Type: application
+      IpAddressType: ipv4
+      SecurityGroups:
+      - !Ref LoadBalancerSecurityGroup
+      Subnets:
+      - Fn::If:
+        -  IsInternal
+        -  !Ref PublicSubnet1
+        -  !Ref PrivateSubnet1
+      - Fn::If:
+        -  IsInternal
+        -  !Ref PublicSubnet2
+        -  !Ref PrivateSubnet2
+      LoadBalancerAttributes: 
+              - 
+                Key: "access_logs.s3.enabled"
+                Value: "false"
+              - 
+                Key: "idle_timeout.timeout_seconds"
+                Value: "60"
+              - 
+                Key: "deletion_protection.enabled"
+                Value: "false"
+              - 
+                Key: "routing.http2.enabled"
+                Value: "true"
+              - 
+                Key: "routing.http.drop_invalid_header_fields.enabled"
+                Value: "false"
+      Tags:
+        - Key: Name
+          Value: !Sub "koandina-${Project}-cl-${Environment}-alb-ecs"
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: ResourceType
+          Value: Application Load Balancer
+        - Key: Partner
+          Value: Arkho
+        - Key: Project
+          Value: !Ref Project
+
+  ECSTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckEnabled: true
+      HealthCheckPort: !Ref ImagePort
+      HealthCheckProtocol: HTTP
+      Port: !Ref ImagePort
+      Protocol: HTTP
+      TargetType: ip
+      VpcId: !Ref VpcId
+      Tags:
+        - Key: Name
+          Value:  !Sub "koandina-${Project}-cl-${Environment}-tg-ecs"
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: ResourceType
+          Value: Target Group
+        - Key: Partner
+          Value: Arkho
+        - Key: Project
+          Value: !Ref Project
+
+
+  Listener:
+    DependsOn:
+    - EcsLoadBalancer
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Condition: NotSSL
+    Properties:
+      DefaultActions:
+        - Order: 1
+          TargetGroupArn: !Ref ECSTargetGroup
+          Type: forward
+      LoadBalancerArn: !Ref EcsLoadBalancer
+      Port: 80
+      Protocol: HTTP
+    DependsOn:
+      - ECSTargetGroup
+
+  HTTPSListener:
+    DependsOn:
+    - EcsLoadBalancer
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Condition: ConfigSSL
+    Properties:
+      DefaultActions:
+        - Order: 1
+          TargetGroupArn: !Ref ECSTargetGroup
+          Type: forward
+      LoadBalancerArn: !Ref EcsLoadBalancer
+      Port: 443
+      Protocol: HTTPS
+      Certificates:
+      - CertificateArn: !Ref CertificateArn
+          # arn:aws:acm:<Region>:<AccountID>:certificate/cffb8a69-0817-4e04-bfb1-dac7426d6b90
+
+    DependsOn:
+      - ECSTargetGroup
+
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties: 
+      CapacityProviders: 
+        - FARGATE
+      ClusterName: !Sub "koandina-${Project}-cl-${Environment}-cluster-ecs"
+      DefaultCapacityProviderStrategy:
+      - CapacityProvider: FARGATE
+      Tags:
+        - Key: Name
+          Value:  !Sub "koandina-${Project}-cl-${Environment}-cluster-ecs"
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: ResourceType
+          Value: ECS Cluster
+        - Key: Partner
+          Value: Arkho
+        - Key: Project
+          Value: !Ref Project
+
+
+
+  FargateService:
+    DependsOn: 
+    - ECSCluster
+    - EcsLoadBalancer
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref ECSCluster
+      DeploymentController:
+        Type: ECS
+      DesiredCount: 1
+      HealthCheckGracePeriodSeconds: 60
+      LaunchType: FARGATE
+      LoadBalancers:
+        -
+          ContainerName: CokeFrontendApp
+          ContainerPort: !Ref ImagePort
+          TargetGroupArn: !Ref ECSTargetGroup
+      NetworkConfiguration:
+          AwsvpcConfiguration:
+            SecurityGroups:
+              - !Ref EcsClusterSecurityGroup
+            Subnets:
+              - !Ref PrivateSubnet1
+              - !Ref PrivateSubnet2
+      TaskDefinition: !Ref FargateServiceTaskDefinition
+      Tags:
+        - Key: Name
+          Value:  !Sub "koandina-${Project}-cl-${Environment}-service-ecs"
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: ResourceType
+          Value: ECS Service
+        - Key: Partner
+          Value: Arkho
+        - Key: Project
+          Value: !Ref Project
+
+  ECSTaskExecutionRole:
+      Type: 'AWS::IAM::Role'
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - ecs-tasks.amazonaws.com
+              Action:
+                - 'sts:AssumeRole'
+        Path: /
+        Policies: 
+          - PolicyName: AccessECR
+            PolicyDocument:
+              Version: 2012-10-17
+              Statement:
+                - Effect: Allow
+                  Action: 
+                    - ecr:BatchGetImage
+                    - ecr:GetAuthorizationToken
+                    - ecr:GetDownloadUrlForLayer 
+                  Resource: '*'
+                - Effect: Allow
+                  Action: 
+                  - logs:*
+                  Resource: '*'
+        Tags:
+        - Key: Name
+          Value:  !Sub "koandina-${Project}-cl-${Environment}-taskRole-ecs"
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: ResourceType
+          Value: Role
+        - Key: Partner
+          Value: Arkho
+        - Key: Project
+          Value: !Ref Project
+
+
+  FargateServiceLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: CokeAndinaForecastLogGroup
+      RetentionInDays: 7
+      Tags:
+        - Key: Name
+          Value:  !Sub "koandina-${Project}-cl-${Environment}-logGroup-ecs"
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: ResourceType
+          Value: Log Group
+        - Key: Partner
+          Value: Arkho
+        - Key: Project
+          Value: !Ref Project
+
+
+  FargateServiceTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      ContainerDefinitions:
+        -
+          Name: CokeFrontendApp
+          Essential: true
+          Image: !Ref EcsImage
+          LogConfiguration:
+              LogDriver: awslogs
+              Options:
+                awslogs-group: !Ref FargateServiceLogGroup
+                awslogs-stream-prefix: CokeFrontendApp-container
+                awslogs-region: !Ref AWS::Region
+          PortMappings:
+            -
+              ContainerPort: !Ref ImagePort
+              HostPort: !Ref ImagePort
+              Protocol: tcp
+      Cpu: '256'
+      ExecutionRoleArn: !GetAtt ECSTaskExecutionRole.Arn
+      Memory: '512'
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        -  FARGATE
+      Tags:
+        - Key: Name
+          Value:  !Sub "koandina-${Project}-cl-${Environment}-TaskDefinition-ecs"
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: ResourceType
+          Value: Task Definition
+        - Key: Partner
+          Value: Arkho
+        - Key: Project
+          Value: !Ref Project
+
+Outputs:
+  FargateServiceName:
+    Description: Referencia al servicio Fargate
+    Value: !GetAtt FargateService.Name
+    Export:
+      Name: !Sub "koandina-${Project}-cl-${Environment}-service-ecs"
+
+  EndpointDNS:
+    Description: DNS del Loadbalancer
+    Value: !GetAtt EcsLoadBalancer.DNSName
+    Export:
+      Name: !Sub "koandina-${Project}-cl-${Environment}-alb-dnsName"

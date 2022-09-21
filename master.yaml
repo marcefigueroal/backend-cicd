@@ -46,6 +46,7 @@ Resources:
 
   NestedStackDB:
     Type: AWS::CloudFormation::Stack     
+    DeletionPolicy: Retain       
     Properties:  
       Parameters:
         Ambiente: !Ref Ambiente
