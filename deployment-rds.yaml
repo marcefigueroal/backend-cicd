@@ -219,5 +219,5 @@ Outputs:
       Name:
         Fn::Sub: "RDSEndpoint"        
   SecretDB:
-    Description: 
+    Description: Datos secretos RDS
     Value: !Ref MySecretDB
