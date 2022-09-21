@@ -209,11 +209,12 @@ Resources:
         Value: !Ref Ambiente
         
 Outputs:
-  DBInstanceName:
+  RDSEndpoint:
     Description: RDS Database Endpoint
     Value:
       Fn::GetAtt:
         - DBInstance
         - Endpoint.Address
     Export:
-      Name: !GetAtt "RDSEndpoint"    
+      Name:
+        Fn::Sub: "RDSEndpoint"
