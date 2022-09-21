@@ -35,9 +35,7 @@ Parameters:
   ProxyName:
     Description: Nombre del Proxy
     Type: String
-  SubnetIds:
-    Description: Subnets para el proxy 
-    Type: String        
+    
 
 Resources:
 
