@@ -88,5 +88,5 @@ Resources:
         DBName: !Ref DBName        
         ProxySecretArn:
           Fn::GetAtt:
-            - NestedStackDB
+            - NestedStackSecrets
             - Outputs.SecretDB          
