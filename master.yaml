@@ -50,6 +50,7 @@ Resources:
       Parameters:
         Ambiente: !Ref Ambiente
         DBMasterUsername: !Ref DBMasterUsername
+        Project: !Ref Project
 
   # NestedStackDB:
   #   Type: AWS::CloudFormation::Stack     
