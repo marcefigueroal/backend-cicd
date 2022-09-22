@@ -9,13 +9,13 @@ on:
 
 jobs:
 
-  deploy_aws_code:
+  deploy_aws_buckets:
       runs-on: ubuntu-latest
       environment: develop
       steps:
       - uses: actions/checkout@v3    
       - name: Configure AWS credentials
-        id: creds
+        id: S3
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -30,7 +30,20 @@ jobs:
           parameter-overrides: >-
             Ambiente=${{ secrets.ENVIRONMENT }}, 
             Project=Koandina-Forecast,
-            S3KMSArn=60769211-ba9f-4c18-ba7f-a3a09d1f78a0
+            S3KMSArn=60769211-ba9f-4c18-ba7f-a3a09d1f78a0     
+
+  upload_templates:
+    needs: deploy_aws_code
+      steps:    
+      - uses: actions/checkout@v3   
+      - uses: shallwefootball/s3-upload-action@master
+        name: Upload S3
+        id: S3
+        with:
+          aws_key_id: ${{ secrets.AWS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+          aws_bucket: koandina-forecast-artifacts-develop
+          source_dir: 'templates'
 
   deploy_aws_auroras:
       needs: deploy_aws_code
