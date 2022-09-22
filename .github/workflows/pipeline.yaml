@@ -29,8 +29,8 @@ jobs:
           no-fail-on-empty-changeset: "1"   
           parameter-overrides: >-
             Ambiente=${{ secrets.ENVIRONMENT }}, 
-            Project=Koandina-Forecast
-            S3KMSArn: 60769211-ba9f-4c18-ba7f-a3a09d1f78a0
+            Project=Koandina-Forecast,
+            S3KMSArn=60769211-ba9f-4c18-ba7f-a3a09d1f78a0
 
   deploy_aws_auroras:
       runs-on: ubuntu-latest
