@@ -85,7 +85,7 @@ Resources:
         ProxyName: !Ref ProxyName
         AllowedCIDRBR: !Ref AllowedCIDRBR
         AllowedCIDRCL: !Ref AllowedCIDRCL        
-        DBName: !Ref DBName        
+        DBName: !Ref DBName
         ProxySecretArn:
           Fn::GetAtt:
             - NestedStackSecrets
