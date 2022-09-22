@@ -48,7 +48,7 @@ jobs:
           source_dir: 'templates'
 
   deploy_aws_auroras:
-      needs: deploy_aws_code
+      needs: deploy_aws_buckets
       runs-on: ubuntu-latest
       environment: develop
       steps:
