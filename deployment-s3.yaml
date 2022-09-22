@@ -72,40 +72,6 @@ Resources:
         - Key: Project
           Value: !Ref Project 
 
-  ArtifactsBucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties: 
-      Bucket: !Ref S3BucketArtifacts
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Action: s3:*
-            Effect: Deny
-            Resource:
-            - !Sub 'arn:aws:s3:::${S3BucketArtifacts}'
-            - !Sub 'arn:aws:s3:::${S3BucketArtifacts}/*'
-            Condition:
-              Bool:
-                aws:SecureTransport: 'false'
-            Principal: "*"      
-
-  SignedURLBucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties: 
-      Bucket: !Ref S3BucketSignedURL
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Action: s3:*
-            Effect: Deny
-            Resource:
-            - !Sub 'arn:aws:s3:::${S3BucketSignedURL}'
-            - !Sub 'arn:aws:s3:::${S3BucketSignedURL}/*'
-            Condition:
-              Bool:
-                aws:SecureTransport: 'false'
-            Principal: "*"     
-
 Outputs:
   BucketSignedURL:
     Description: Bucket Signed URL
