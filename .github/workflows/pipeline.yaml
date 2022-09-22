@@ -42,13 +42,13 @@ jobs:
         name: Upload S3
         id: S3
         with:
-          aws_key_id: ${{ secrets.AWS_KEY_ID }}
+          aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
           aws_bucket: koandina-forecast-artifacts-develop
           source_dir: 'templates'
 
   deploy_aws_auroras:
-      needs: deploy_aws_buckets
+      needs: upload_templates
       runs-on: ubuntu-latest
       environment: develop
       steps:
