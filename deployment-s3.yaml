@@ -21,7 +21,7 @@ Resources:
   S3BucketArtifacts:
     Type: 'AWS::S3::Bucket'
     Properties:
-      BucketName: !Sub ${Project}-Artifacts-${Ambiente}
+      BucketName: !Sub koandina-forecast-artifacts-${Ambiente}
       AccessControl: Private
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
@@ -35,7 +35,7 @@ Resources:
               KMSMasterKeyID: !Ref S3KMSArn
       Tags:
         - Key: Name
-          Value:  !Sub "koandina-${Project}-cl-${Ambiente}-S3"
+          Value:  !Sub "${Project}-cl-${Ambiente}-S3"
         - Key: Ambiente de despliegue
           Value: !Ref Ambiente
         - Key: ResourceType
@@ -48,7 +48,7 @@ Resources:
   S3BucketSignedURL:
     Type: 'AWS::S3::Bucket'
     Properties:
-      BucketName: !Sub ${Project}-SignedURL-${Ambiente}
+      BucketName: !Sub koandina-forecast-signedurl-${Ambiente}
       AccessControl: Private
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
@@ -62,7 +62,7 @@ Resources:
               KMSMasterKeyID: !Ref S3KMSArn
       Tags:
         - Key: Name
-          Value:  !Sub "koandina-${Project}-cl-${Ambiente}-S3"
+          Value:  !Sub "${Project}-cl-${Ambiente}-S3"
         - Key: Ambiente de despliegue
           Value: !Ref Ambiente
         - Key: ResourceType
