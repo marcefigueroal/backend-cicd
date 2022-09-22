@@ -33,7 +33,7 @@ jobs:
             S3KMSArn=60769211-ba9f-4c18-ba7f-a3a09d1f78a0     
 
   upload_templates:
-      needs: deploy_aws_code
+      needs: deploy_aws_buckets
       runs-on: ubuntu-latest
       environment: develop      
       steps:    
