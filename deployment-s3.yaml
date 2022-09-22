@@ -1,7 +1,8 @@
 AWSTemplateFormatVersion: '2010-09-09'
-
 Description: CFN template para crear  Bucket Artifacts
+
 Parameters:
+
   Ambiente:
     Description: Ambiente de despliegue
     Type: String
@@ -16,9 +17,9 @@ Parameters:
     Description: KMS Key ID para Buckets S3      
 
 Resources:
+
   S3BucketArtifacts:
     Type: 'AWS::S3::Bucket'
-    #DeletionPolicy: Retain
     Properties:
       BucketName: !Sub ${Project}-Artifacts-${Ambiente}
         AccessControl: Private
@@ -33,23 +34,22 @@ Resources:
                 SSEAlgorithm: 'aws:kms'
                 KMSMasterKeyID: !Ref S3KMSArn
         Tags:
-            - Key: Name
-              Value:  !Sub "koandina-${Project}-cl-${Ambiente}-S3"
-            - Key: Ambiente de despliegue
-              Value: !Ref Ambiente
-            - Key: ResourceType
-              Value: Bucket
-            - Key: Partner
-              Value: Arkho
-            - Key: Project
-              Value: !Ref Project 
+          - Key: Name
+            Value:  !Sub "koandina-${Project}-cl-${Ambiente}-S3"
+          - Key: Ambiente de despliegue
+            Value: !Ref Ambiente
+          - Key: ResourceType
+            Value: Bucket
+          - Key: Partner
+            Value: Arkho
+          - Key: Project
+            Value: !Ref Project 
       UpdateReplacePolicy: Retain
       DeletionPolicy: Delete
 
 
   S3BucketSignedURL:
     Type: 'AWS::S3::Bucket'
-    #DeletionPolicy: Retain
     Properties:
         BucketName: !Sub ${Project}-SignedURL-${Ambiente}
         AccessControl: Private
@@ -64,16 +64,16 @@ Resources:
                 SSEAlgorithm: 'aws:kms'
                 KMSMasterKeyID: !Ref S3KMSArn
         Tags:
-            - Key: Name
-              Value:  !Sub "koandina-${Project}-cl-${Ambiente}-S3"
-            - Key: Ambiente de despliegue
-              Value: !Ref Ambiente
-            - Key: ResourceType
-              Value: Bucket
-            - Key: Partner
-              Value: Arkho
-            - Key: Project
-              Value: !Ref Project 
+          - Key: Name
+            Value:  !Sub "koandina-${Project}-cl-${Ambiente}-S3"
+          - Key: Ambiente de despliegue
+            Value: !Ref Ambiente
+          - Key: ResourceType
+            Value: Bucket
+          - Key: Partner
+            Value: Arkho
+          - Key: Project
+            Value: !Ref Project 
       UpdateReplacePolicy: Retain
       DeletionPolicy: Delete
 
