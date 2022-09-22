@@ -44,7 +44,6 @@ Resources:
           Value: Arkho
         - Key: Project
           Value: !Ref Project 
-      UpdateReplacePolicy: Retain
 
   S3BucketSignedURL:
     Type: 'AWS::S3::Bucket'
@@ -72,7 +71,6 @@ Resources:
           Value: Arkho
         - Key: Project
           Value: !Ref Project 
-      DeletionPolicy: Delete
 
   ArtifactsBucketPolicy:
     Type: AWS::S3::BucketPolicy
