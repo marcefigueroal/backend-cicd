@@ -34,6 +34,8 @@ jobs:
 
   upload_templates:
       needs: deploy_aws_code
+      runs-on: ubuntu-latest
+      environment: develop      
       steps:    
       - uses: actions/checkout@v3   
       - uses: shallwefootball/s3-upload-action@master
